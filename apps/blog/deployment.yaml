@@ -6,28 +6,26 @@ metadata:
 spec:
   replicas: 1
   selector:
-    matchLabels: { app: blog }
+    matchLabels:
+      app: blog
   template:
     metadata:
-      labels: { app: blog }
+      labels:
+        app: blog
     spec:
       containers:
+        # Contenedor principal: servidor Astro
         - name: blog
-          # Reemplaza por tu imagen de Astro en producción
           image: ismapolis/polis-blog:latest
           imagePullPolicy: Always
           ports:
-            - containerPort: 4321 # o el puerto que exponga tu server Astro
+            - containerPort: 4321
           env:
             - name: NODE_ENV
               value: "production"
           volumeMounts:
             - name: content
-              mountPath: /app/content/posts
-              subPath: posts
-            - name: content
-              mountPath: /app/content/finds
-              subPath: finds
+              mountPath: /app/src/content
           readinessProbe:
             httpGet: { path: "/", port: 4321 }
             initialDelaySeconds: 30
@@ -38,6 +36,22 @@ spec:
             initialDelaySeconds: 10
             periodSeconds: 10
             timeoutSeconds: 5
+
+        # Sidecar: reconstruye ficheros estáticos automáticamente
+        - name: blog-builder
+          image: ismapolis/polis-blog:latest
+          command: ["sh", "-c"]
+          args:
+            - |
+              while true; do
+                inotifywait -e create,modify,delete -r /app/src/content/
+                echo "Detected change, rebuilding..."
+                npm run build
+              done
+          volumeMounts:
+            - name: content
+              mountPath: /app/content
+
       volumes:
         - name: content
           persistentVolumeClaim:
