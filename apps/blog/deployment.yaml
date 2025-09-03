@@ -14,50 +14,21 @@ spec:
         app: blog
     spec:
       containers:
-        # Nginx sirve los HTML
+        # Contenedor principal: Nginx sirve los HTML
         - name: blog
-          image: ismapolis/polis-blog:production
+          image: ismapolis/polis-blog:latest
+          imagePullPolicy: Always
           ports:
             - containerPort: 80
-          volumeMounts:
-            - name: dist
-              mountPath: /usr/share/nginx/html
           readinessProbe:
             httpGet:
               path: /
               port: 80
-            initialDelaySeconds: 60
+            initialDelaySeconds: 10
             periodSeconds: 10
-
-        # Sidecar para regenerar estáticos
-        - name: blog-builder
-          image: ismapolis/polis-blog:builder
-          command: ["sh", "-c"]
-          args:
-            - |
-              apk add --no-cache inotify-tools
-              echo "Doing initial build..."
-              npm install
-              npm run build
-              cp -r /app/dist/* /dist
-              echo "Initial build complete. Watching for changes..."
-              while true; do
-                inotifywait -e create,modify,delete -r /app/src/content
-                echo "Detected change, rebuilding..."
-                npm run build
-                cp -r /app/dist/* /dist
-              done
-          volumeMounts:
-            - name: content
-              mountPath: /app/src/content
-            - name: dist
-              mountPath: /dist
-
-      volumes:
-        # PVC con los posts markdown
-        - name: content
-          persistentVolumeClaim:
-            claimName: blog-content-pvc
-        # Volumen temporal compartido entre Nginx y sidecar
-        - name: dist
-          emptyDir: {}
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 30
+            periodSeconds: 20
