@@ -14,46 +14,50 @@ spec:
         app: blog
     spec:
       containers:
-        # Contenedor principal: servidor Astro
+        # Contenedor principal: Nginx sirve los HTML
         - name: blog
           image: ismapolis/polis-blog:latest
-          imagePullPolicy: Always
           ports:
-            - containerPort: 4321
-          env:
-            - name: NODE_ENV
-              value: "production"
+            - containerPort: 80
           volumeMounts:
-            - name: content
-              mountPath: /app/src/content
+            - name: dist
+              mountPath: /usr/share/nginx/html
           readinessProbe:
-            httpGet: { path: "/", port: 4321 }
-            initialDelaySeconds: 30
-            periodSeconds: 20
-            timeoutSeconds: 5
-          livenessProbe:
-            httpGet: { path: "/", port: 4321 }
+            httpGet:
+              path: /
+              port: 80
             initialDelaySeconds: 10
             periodSeconds: 10
-            timeoutSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 30
+            periodSeconds: 20
 
-        # Sidecar: reconstruye ficheros estáticos automáticamente
+        # Sidecar: detecta cambios en los posts y reconstruye
         - name: blog-builder
           image: ismapolis/polis-blog:latest
           command: ["sh", "-c"]
           args:
             - |
+              apk add --no-cache inotify-tools
               while true; do
-                inotifywait -e create,modify,delete -r /app/src/content/
+                inotifywait -e create,modify,delete -r /app/src/content
                 echo "Detected change, rebuilding..."
+                npm install
                 npm run build
-                cp -r /app/dist /usr/share/nginx/html
+                cp -r /app/dist/* /dist
               done
           volumeMounts:
             - name: content
               mountPath: /app/src/content
+            - name: dist
+              mountPath: /dist
 
       volumes:
         - name: content
           persistentVolumeClaim:
             claimName: blog-content-pvc
+        - name: dist
+          emptyDir: {}
