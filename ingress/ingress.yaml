@@ -1,0 +1,47 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ismapolis-ingress
+  namespace: ismapolis
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt
+    kubernetes.io/ingress.class: public
+spec:
+  tls:
+    - hosts: ["blog.ismapolis.com"]
+      secretName: blog-tls
+    - hosts: ["mtg.ismapolis.com"]
+      secretName: vicios-tls
+    - hosts: ["api.ismapolis.com"]
+      secretName: api-tls
+  rules:
+    - host: blog.ismapolis.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: blog-svc
+                port:
+                  number: 80
+    - host: app.ismapolis.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: vicios-frontend-svc
+                port:
+                  number: 80
+    - host: api.ismapolis.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: vicios-api-svc
+                port:
+                  number: 80

@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vicios-frontend
+  namespace: ismapolis
+spec:
+  replicas: 2
+  selector:
+    matchLabels: { app: vicios-frontend }
+  template:
+    metadata:
+      labels: { app: vicios-frontend }
+    spec:
+      containers:
+        - name: web
+          image: ismapolis/vicios-frontend:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 3000
+          env:
+            - name: VITE_API_URL
+              value: "https://api.ismapolis.com" # ajusta según tu frontend
+          readinessProbe:
+            httpGet: { path: "/", port: 3000 }
+            initialDelaySeconds: 10
+          livenessProbe:
+            httpGet: { path: "/", port: 3000 }
+            initialDelaySeconds: 20

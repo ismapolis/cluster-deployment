@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: vicios-db
+  namespace: ismapolis
+spec:
+  serviceName: vicios-db-svc
+  replicas: 1
+  selector:
+    matchLabels: { app: vicios-db }
+  template:
+    metadata:
+      labels: { app: vicios-db }
+    spec:
+      containers:
+        - name: postgres
+          image: postgres:16-alpine
+          ports:
+            - containerPort: 5432
+          envFrom:
+            - secretRef:
+                name: vicios-secrets
+          volumeMounts:
+            - name: db-data
+              mountPath: /var/lib/postgresql/data
+              subPath: data
+          readinessProbe:
+            tcpSocket: { port: 5432 }
+            initialDelaySeconds: 10
+          livenessProbe:
+            tcpSocket: { port: 5432 }
+            initialDelaySeconds: 20
+  volumeClaimTemplates:
+    - metadata:
+        name: db-data
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        resources:
+          requests:
+            storage: 2Gi

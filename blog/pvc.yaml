@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: blog-content-pvc
+  namespace: ismapolis
+spec:
+  accessModes: ["ReadWriteOnce"] # MicroK8s hostpath
+  resources:
+    requests:
+      storage: 1Gi

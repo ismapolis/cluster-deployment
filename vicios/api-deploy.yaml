@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vicios-api
+  namespace: ismapolis
+spec:
+  replicas: 2
+  selector:
+    matchLabels: { app: vicios-api }
+  template:
+    metadata:
+      labels: { app: vicios-api }
+    spec:
+      containers:
+        - name: api
+          image: ismapolis/vicios-api:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 3000
+          envFrom:
+            - secretRef:
+                name: vicios-secrets
+          readinessProbe:
+            httpGet: { path: "/api", port: 3000 }
+            initialDelaySeconds: 10
+          livenessProbe:
+            httpGet: { path: "/api", port: 3000 }
+            initialDelaySeconds: 20
