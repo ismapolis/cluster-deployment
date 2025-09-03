@@ -5,7 +5,7 @@ metadata:
   namespace: ismapolis
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt
-    kubernetes.io/ingress.class: public
+    kubernetes.io/ingress.class: traefik
 spec:
   tls:
     - hosts: ["blog.ismapolis.com"]
