@@ -47,10 +47,11 @@ spec:
                 inotifywait -e create,modify,delete -r /app/src/content/
                 echo "Detected change, rebuilding..."
                 npm run build
+                cp -r /app/dist /usr/share/nginx/html
               done
           volumeMounts:
             - name: content
-              mountPath: /app/content
+              mountPath: /app/src/content
 
       volumes:
         - name: content

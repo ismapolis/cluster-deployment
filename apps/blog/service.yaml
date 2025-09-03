@@ -7,4 +7,4 @@ spec:
   selector: { app: blog }
   ports:
     - port: 80
-      targetPort: 4321
+      targetPort: 80
