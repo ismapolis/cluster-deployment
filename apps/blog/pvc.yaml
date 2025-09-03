@@ -4,7 +4,7 @@ metadata:
   name: blog-content-pvc
   namespace: ismapolis
 spec:
-  accessModes: ["ReadWriteOnce"] # MicroK8s hostpath
+  accessModes: ["ReadWriteOnce"]
   resources:
     requests:
       storage: 1Gi
