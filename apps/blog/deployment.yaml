@@ -42,10 +42,14 @@ spec:
           args:
             - |
               apk add --no-cache inotify-tools
+              echo "Doing initial build..."
+              npm install
+              npm run build
+              cp -r /app/dist/* /dist
+              echo "Initial build complete. Watching for changes..."
               while true; do
                 inotifywait -e create,modify,delete -r /app/src/content
                 echo "Detected change, rebuilding..."
-                npm install
                 npm run build
                 cp -r /app/dist/* /dist
               done
