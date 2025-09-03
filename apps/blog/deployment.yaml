@@ -14,9 +14,9 @@ spec:
         app: blog
     spec:
       containers:
-        # Contenedor principal: Nginx sirve los HTML
+        # Nginx sirve los HTML
         - name: blog
-          image: ismapolis/polis-blog:latest
+          image: ismapolis/polis-blog:production
           ports:
             - containerPort: 80
           volumeMounts:
@@ -26,18 +26,12 @@ spec:
             httpGet:
               path: /
               port: 80
-            initialDelaySeconds: 10
+            initialDelaySeconds: 60
             periodSeconds: 10
-          livenessProbe:
-            httpGet:
-              path: /
-              port: 80
-            initialDelaySeconds: 30
-            periodSeconds: 20
 
-        # Sidecar: detecta cambios en los posts y reconstruye
+        # Sidecar para regenerar estáticos
         - name: blog-builder
-          image: ismapolis/polis-blog:latest
+          image: ismapolis/polis-blog:builder
           command: ["sh", "-c"]
           args:
             - |
@@ -60,8 +54,10 @@ spec:
               mountPath: /dist
 
       volumes:
+        # PVC con los posts markdown
         - name: content
           persistentVolumeClaim:
             claimName: blog-content-pvc
+        # Volumen temporal compartido entre Nginx y sidecar
         - name: dist
           emptyDir: {}
