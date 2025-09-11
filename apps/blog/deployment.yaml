@@ -3,6 +3,10 @@ kind: Deployment
 metadata:
   name: blog
   namespace: ismapolis
+  annotations:
+    argocd-image-updater.argoproj.io/image-list: blog=docker.io/ismapolis/polis-blog
+    argocd-image-updater.argoproj.io/blog.update-strategy: latest
+    argocd-image-updater.argoproj.io/blog.allow-tags: regexp:^[a-f0-9]{7}$
 spec:
   replicas: 1
   selector:
