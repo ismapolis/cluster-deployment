@@ -4,9 +4,13 @@ metadata:
   name: blog
   namespace: ismapolis
   annotations:
+    # Lista de contenedores que Image Updater debe observar
     argocd-image-updater.argoproj.io/image-list: blog=docker.io/ismapolis/polis-blog
-    argocd-image-updater.argoproj.io/blog.update-strategy: latest
-    argocd-image-updater.argoproj.io/blog.allow-tags: regexp:^[a-f0-9]{7}$
+    # Estrategia de actualización de la imagen
+    argocd-image-updater.argoproj.io/blog.update-strategy: newest_build
+    # Permitir solo tags que sean un hash de Git corto
+    argocd-image-updater.argoproj.io/blog.allow-tags: "regexp:^[a-f0-9]{7}$"
+    argocd-image-updater.argoproj.io/write-back-method: git
 spec:
   replicas: 1
   selector:
@@ -18,9 +22,8 @@ spec:
         app: blog
     spec:
       containers:
-        # Contenedor principal: Nginx sirve los HTML
         - name: blog
-          image: ismapolis/polis-blog:latest
+          image: docker.io/ismapolis/polis-blog:latest
           imagePullPolicy: Always
           ports:
             - containerPort: 80
