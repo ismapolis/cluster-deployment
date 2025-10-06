@@ -25,7 +25,6 @@ jobs:
           git add apps/blog/deployment.yaml
           if ! git diff --cached --quiet; then
             git commit -m "Update blog image"
-            # Forzar que Git use GITHUB_TOKEN en la URL del remote
             git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/ismapolis/cluster-deployment.git
             git push origin HEAD
           else
