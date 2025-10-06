@@ -10,6 +10,8 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Update deployment manifest
         run: |
@@ -21,4 +23,9 @@ jobs:
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
           git add apps/blog/deployment.yaml
-          git diff --quiet || git commit -m "Update blog image" && git push
+          if ! git diff --cached --quiet; then
+            git commit -m "Update blog image"
+            git push origin HEAD
+          else
+            echo "No hay cambios que commitear"
+          fi
