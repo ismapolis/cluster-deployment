@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: blog
-          image: docker.io/ismapolis/polis-blog:f38ce9e
+          image: docker.io/ismapolis/polis-blog:9a72a7d
           imagePullPolicy: Always
           ports:
             - containerPort: 80
