@@ -11,21 +11,20 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.PAT_DEPLOY }}
 
       - name: Update deployment manifest
         run: |
           echo "Imagen recibida: ${{ github.event.client_payload.image }}"
-          sed -i "s|docker.io/ismapolis/polis-blog:.*|${{ github.event.client_payload.image }}|g" apps/blog/deployment.yaml
+          sed -i "s|docker.io/ismapolis/polis-blog:[^ ]*|${{ github.event.client_payload.image }}|g" apps/blog/deployment.yaml
 
       - name: Commit & push changes
         run: |
-          git config user.name "github-actions"
-          git config user.email "github-actions@github.com"
+          git config --global user.name "github-actions"
+          git config --global user.email "github-actions@github.com"
           git add apps/blog/deployment.yaml
           if ! git diff --cached --quiet; then
-            git commit -m "Update blog image"
-            # Usar PAT para autenticación
+            git commit -m "Update blog image to ${{ github.event.client_payload.image }}"
             git remote set-url origin https://x-access-token:${{ secrets.PAT_DEPLOY }}@github.com/ismapolis/cluster-deployment.git
             git push origin HEAD
           else
