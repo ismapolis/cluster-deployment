@@ -14,7 +14,7 @@ jobs:
       - name: Update deployment manifest
         run: |
           echo "Imagen recibida: ${{ github.event.client_payload.image }}"
-          sed -i "s|docker.io/ismapolis/polis-blog:.*|${{ github.event.client_payload.image }}|g" app/blog/blog-deployment.yaml
+          sed -i "s|docker.io/ismapolis/polis-blog:.*|${{ github.event.client_payload.image }}|g" app/blog/deployment.yaml
 
       - name: Commit & push changes
         run: |
