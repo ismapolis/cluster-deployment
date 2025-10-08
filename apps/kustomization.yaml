@@ -8,3 +8,7 @@ resources:
   - blog/service.yaml
   - common/clusterissuer.yaml
   - common/ingress.yaml
+  - jellyfin/pvc.yaml
+  - jellyfin/deployment.yaml
+  - jellyfin/service.yaml
+  - vicios/namespace.yaml

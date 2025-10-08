@@ -2,7 +2,7 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: jellyfin-data
-  namespace: jellyfin
+  namespace: ismapolis
 spec:
   accessModes:
     - ReadWriteOnce
