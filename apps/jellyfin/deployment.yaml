@@ -19,15 +19,9 @@ spec:
           ports:
             - containerPort: 8096
           volumeMounts:
-            - name: jellyfin-data
-              mountPath: /config
             - name: media
               mountPath: /media
       volumes:
-        - name: jellyfin-data
-          persistentVolumeClaim:
-            claimName: jellyfin-data
         - name: media
-          hostPath:
-            path: /pelis
-            type: DirectoryOrCreate
+          persistentVolumeClaim:
+            claimName: pvc-jellyfin
