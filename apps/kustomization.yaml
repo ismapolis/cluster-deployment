@@ -3,7 +3,6 @@ kind: Kustomization
 namespace: ismapolis
 resources:
   - namespace.yaml
-  - blog/pvc.yaml
   - blog/deployment.yaml
   - blog/service.yaml
   - common/clusterissuer.yaml
