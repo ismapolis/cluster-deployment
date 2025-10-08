@@ -10,3 +10,4 @@ spec:
     requests:
       storage: 15Gi
   volumeName: pv-jellyfin
+  storageClassName: ""
