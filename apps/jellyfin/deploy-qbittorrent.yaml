@@ -32,7 +32,7 @@ spec:
             - name: WEBUI_PORT
               value: "9090"
           volumeMounts:
-            - name: meddia
+            - name: media
               mountPath: /media
       volumes:
         - name: media
