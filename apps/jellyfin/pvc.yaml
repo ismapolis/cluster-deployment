@@ -25,6 +25,7 @@ spec:
     requests:
       storage: 5Gi
   volumeName: pv-radarr-config
+  storageClassName: ""
 
 ---
 apiVersion: v1
