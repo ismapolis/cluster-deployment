@@ -13,20 +13,12 @@ spec:
       labels:
         app: qbittorrent
     spec:
+      hostNetwork: true
       containers:
         - name: qbittorrent
           image: linuxserver/qbittorrent:latest
           ports:
             - containerPort: 8080
-          env:
-            - name: PUID
-              value: "1000"
-            - name: PGID
-              value: "1000"
-            - name: WEBUI_PORT
-              value: "8080"
-            - name: WEBUI_ADDRESS
-              value: "0.0.0.0"
           volumeMounts:
             - name: downloads
               mountPath: /downloads

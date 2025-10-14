@@ -4,9 +4,17 @@ metadata:
   name: qbittorrent
   namespace: ismapolis
 spec:
-  type: NodePort
+  type: ClusterIP
   selector:
     app: qbittorrent
   ports:
-    - port: 8080
-      nodePort: 30120
+    - name: webui
+      port: 8080
+      targetPort: 30120
+    - name: tcp
+      port: 6881
+      targetPort: 6881
+    - name: udp
+      port: 6881
+      targetPort: 6881
+      protocol: UDP
