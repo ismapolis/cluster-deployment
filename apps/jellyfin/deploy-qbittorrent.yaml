@@ -32,9 +32,9 @@ spec:
             - name: WEBUI_PORT
               value: "9090"
           volumeMounts:
-            - name: downloads
-              mountPath: /downloads
+            - name: meddia
+              mountPath: /media
       volumes:
-        - name: downloads
+        - name: media
           persistentVolumeClaim:
             claimName: pvc-jellyfin
