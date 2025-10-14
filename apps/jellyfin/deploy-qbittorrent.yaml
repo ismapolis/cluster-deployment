@@ -18,7 +18,19 @@ spec:
         - name: qbittorrent
           image: linuxserver/qbittorrent:latest
           ports:
-            - containerPort: 8080
+            - containerPort: 8081
+            - containerPort: 6881
+            - containerPort: 6881
+              protocol: UDP
+          env:
+            - name: PUID
+              value: "1000"
+            - name: PGID
+              value: "1000"
+            - name: TZ
+              value: "Europe/Madrid"
+            - name: WEBUI_PORT
+              value: "9090"
           volumeMounts:
             - name: downloads
               mountPath: /downloads
