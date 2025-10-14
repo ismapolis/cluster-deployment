@@ -14,20 +14,25 @@ spec:
         app: radarr
     spec:
       securityContext:
-        fsGroup: 911 # asegura que todos los archivos del PVC sean accesibles
+        fsGroup: 911 # asegura que todos los archivos creados en los volúmenes sean accesibles
       containers:
         - name: radarr
           image: linuxserver/radarr:latest
           securityContext:
-            runAsUser: 911 # usuario 'abc' dentro del contenedor
-            runAsGroup: 911 # grupo 'abc'
+            runAsUser: 911
+            runAsGroup: 911
           ports:
             - containerPort: 7878
               name: web
           volumeMounts:
             - name: media
               mountPath: /media
+            - name: config
+              mountPath: /config
       volumes:
         - name: media
           persistentVolumeClaim:
             claimName: pvc-jellyfin
+        - name: config
+          persistentVolumeClaim:
+            claimName: pvc-radarr-config
