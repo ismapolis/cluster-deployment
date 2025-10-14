@@ -1,27 +1,32 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: jellyfin
+  name: radarr
   namespace: ismapolis
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: jellyfin
+      app: radarr
   template:
     metadata:
       labels:
-        app: jellyfin
+        app: radarr
     spec:
       containers:
-        - name: jellyfin
-          image: jellyfin/jellyfin:latest
+        - name: radarr
+          image: linuxserver/radarr:latest
           ports:
-            - containerPort: 8096
+            - containerPort: 7878
           volumeMounts:
+            - name: config
+              mountPath: /config
             - name: media
               mountPath: /media
       volumes:
+        - name: config
+          persistentVolumeClaim:
+            claimName: pvc-radarr-config
         - name: media
           persistentVolumeClaim:
             claimName: pvc-jellyfin
